@@ -13,7 +13,7 @@ from tqdm import tqdm
 from training_utils import evaluate
 
 
-def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_decay):
+def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_decay, freeze):
     # Load datasets
     train_df = pd.read_csv("processed_data/train.csv")
     val_df = pd.read_csv("processed_data/val.csv")
@@ -67,6 +67,16 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
+    if freeze:
+        # Freeze all layers except the classifier
+        for param in model.bert.parameters():
+            param.requires_grad = False
+
+        # Keep only the classification head trainable
+        for param in model.classifier.parameters():
+            param.requires_grad = True
+
+
     optimizer = AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
     lr_scheduler = get_scheduler(
@@ -102,6 +112,7 @@ if __name__ == '__main__':
     parser.add_argument("--learning_rate", type=float, default=2e-5, help="Learning rate")
     parser.add_argument("--num_epochs", type=int, default=8, help="Number of training epochs")
     parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay")
+    parser.add_argument("--freeze", type=bool , default = False, help="Freeze BERT layers")
 
     args = parser.parse_args()
 
@@ -111,5 +122,6 @@ if __name__ == '__main__':
         batch_size=args.batch_size,
         learning_rate=args.learning_rate,
         num_epochs=args.num_epochs,
-        weight_decay=args.weight_decay
+        weight_decay=args.weight_decay,
+        freeze=args.freeze
     )
