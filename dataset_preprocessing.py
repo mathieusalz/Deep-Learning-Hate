@@ -99,7 +99,7 @@ def preprocess():
     df_mhs = mhs_preprocess("data/measuring-hate-speech.parquet")
 
     # Combine all the datasets
-    df_all = pd.concat([df_all, df_hindi, df_final_english])
+    df_all = pd.concat([df_mlma, df_hindi, df_mhs])
     df_all = shuffle(df_all, random_state=42).reset_index(drop=True)
 
     # Train/Validation/Test split
@@ -110,3 +110,7 @@ def preprocess():
     train_df.to_csv("processed_data/train.csv", index=False)
     val_df.to_csv("processed_data/val.csv", index=False)
     test_df.to_csv("processed_data/test.csv", index=False)
+
+if __name__ == "__main__":
+    preprocess()
+    print("Preprocessing complete. Datasets saved to processed_data/")

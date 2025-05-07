@@ -1,5 +1,6 @@
 import argparse
 import pandas as pd
+import numpy as np
 from datasets import Dataset
 
 import torch
@@ -27,8 +28,8 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
     print(f"Size Training Set: {len(train_dataset)} \t Size Validation Set: {len(val_dataset)} \t Size Test Set: {len(test_dataset)}")
 
     class_weights = compute_class_weight(class_weight='balanced',
-                                        classes=np.unique(train_dataset['language']),
-                                        y=train_dataset['language'])
+                                        classes=np.unique(train_df['language']),
+                                        y=train_df['language'])
     class_weights = torch.tensor(class_weights, dtype=torch.float).to(device)
 
 
