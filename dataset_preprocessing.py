@@ -3,13 +3,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from datasets import Dataset, concatenate_datasets
 
-def mlma_preprocess(path):
+def mlma_preprocess(path, language):
     df = pd.read_csv(path)
     df = df[df["sentiment"] != "normal"]  # Supprimer les tweets non haineux
     df = df[["tweet", "target"]]  # Garder seulement les colonnes nécessaires
     df = df.dropna()
     df['target'] = df['target'].replace({'sexual_orientation': 'gender_sexual_orientation'})
     df['target'] = df['target'].replace({'gender': 'gender_sexual_orientation'})
+    df['language'] = language 
+    df = df.dropna()
     return df
 
 
@@ -45,13 +47,15 @@ def hindi_preprocess(path):
 
     # Keep only relevant columns for mBERT
     df_hindi = df_hindi[['Tweet', 'target']].rename(columns={'Tweet': 'tweet'})
+    df_hindi['language'] = 'hindi'
+    df_hindi.dropna()
 
     return df_hindi
 
 def mhs_preprocess(path):
 
     # Load the dataset
-    df_parquet = pd.read_parquet("data/measuring-hate-speech.parquet")
+    df_parquet = pd.read_parquet(path)
 
     # Keep only entries with hate speech score >= 2
     df_filtered_english = df_parquet[df_parquet["hatespeech"] >= 2].copy()
@@ -81,14 +85,16 @@ def mhs_preprocess(path):
     df_final_english.rename(columns={"text": "tweet"}, inplace=True)
     df_final_english["language"] = "english"
 
+    df_final_english.dropna()
+
     return df_final_english
 
 
 def preprocess():
     # Preprocess MLMA datasets
-    df_en = mlma_preprocess("data/en_dataset.csv")
-    df_fr = mlma_preprocess("data/fr_dataset.csv")
-    df_ar = mlma_preprocess("data/ar_dataset.csv")
+    df_en = mlma_preprocess("data/en_dataset.csv", 'english')
+    df_fr = mlma_preprocess("data/fr_dataset.csv", 'french')
+    df_ar = mlma_preprocess("data/ar_dataset.csv", 'arabic')
     # ---- Combine MLMA datasets
     df_mlma = pd.concat([df_en, df_fr, df_ar])
 

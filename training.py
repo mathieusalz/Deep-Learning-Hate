@@ -27,11 +27,17 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
 
     print(f"Size Training Set: {len(train_dataset)} \t Size Validation Set: {len(val_dataset)} \t Size Test Set: {len(test_dataset)}")
 
-    class_weights = compute_class_weight(class_weight='balanced',
-                                        classes=np.unique(train_df['language']),
-                                        y=train_df['language'])
-    class_weights = torch.tensor(class_weights, dtype=torch.float).to(device)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    # class_weights = compute_class_weight(class_weight='balanced',
+    #                                     classes=np.unique(train_df['language']),
+    #                                     y=train_df['language'])
+    # class_weights = torch.tensor(class_weights, dtype=torch.float).to(device)
+
+
+    lang_counts = train_df['language'].value_counts()
+    lang_weights = 1.0 / lang_counts
+    lang_weights = (lang_weights / lang_weights.sum()).to_dict()  # normalize
 
     # Tokenizer and label encoding
     tokenizer = BertTokenizer.from_pretrained(pretrain)
@@ -59,15 +65,15 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
         return batch_padded
 
     train_dataloader = DataLoader(
-        train_dataset.remove_columns(["tweet", "target", "__index_level_0__"]),
+        train_dataset.remove_columns(["tweet", "target"]),
         batch_size=batch_size, shuffle=True, collate_fn=data_collator_with_language)
 
     val_dataloader = DataLoader(
-        val_dataset.remove_columns(["tweet", "target", "__index_level_0__"]),
+        val_dataset.remove_columns(["tweet", "target"]),
         batch_size=batch_size, collate_fn=data_collator_with_language)
 
     test_dataloader = DataLoader(
-        test_dataset.remove_columns(["tweet", "target", "__index_level_0__"]),
+        test_dataset.remove_columns(["tweet", "target"]),
         batch_size=batch_size, collate_fn=data_collator_with_language)
 
     num_labels = len(label_encoder.classes_)
@@ -93,18 +99,25 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
         num_training_steps=len(train_dataloader) * num_epochs
     )
 
-    loss_fn = torch.nn.CrossEntropyLoss(weight=class_weights)
+    loss_fn = torch.nn.CrossEntropyLoss(reduction='none')
 
     for epoch in range(num_epochs):
         model.train()
         loop = tqdm(train_dataloader, desc=f"Epoch {epoch+1}/{num_epochs}")
         for batch in loop:
-            lang = batch.pop("language")
+            languages  = batch.pop("language")
             batch = {k: v.to(device) for k, v in batch.items()}
             outputs = model(**batch)
             logits = outputs.logits
             labels = batch["labels"]
-            loss = loss_fn(logits, labels)
+            #loss = loss_fn(logits, labels)
+            # Get sample weights based on language
+            losses = loss_fn(logits, labels)
+
+            sample_weights = torch.tensor([lang_weights[lang] for lang in languages], dtype=torch.float).to(device)
+
+            # Apply weights to the per-sample losses
+            loss = (losses * sample_weights).mean()
 
             loss.backward()
             optimizer.step()
