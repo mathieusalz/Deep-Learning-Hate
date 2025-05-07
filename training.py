@@ -8,6 +8,7 @@ from torch.optim import AdamW
 
 from transformers import BertTokenizer, BertForSequenceClassification, get_scheduler, DataCollatorWithPadding
 from sklearn.preprocessing import LabelEncoder
+from sklearn.utils.class_weight import compute_class_weight
 from tqdm import tqdm
 
 from training_utils import evaluate
@@ -24,6 +25,12 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
     test_dataset = Dataset.from_pandas(test_df)
 
     print(f"Size Training Set: {len(train_dataset)} \t Size Validation Set: {len(val_dataset)} \t Size Test Set: {len(test_dataset)}")
+
+    class_weights = compute_class_weight(class_weight='balanced',
+                                        classes=np.unique(train_dataset['language']),
+                                        y=train_dataset['language'])
+    class_weights = torch.tensor(class_weights, dtype=torch.float).to(device)
+
 
     # Tokenizer and label encoding
     tokenizer = BertTokenizer.from_pretrained(pretrain)
@@ -85,6 +92,8 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
         num_training_steps=len(train_dataloader) * num_epochs
     )
 
+    loss_fn = torch.nn.CrossEntropyLoss(weight=class_weights)
+
     for epoch in range(num_epochs):
         model.train()
         loop = tqdm(train_dataloader, desc=f"Epoch {epoch+1}/{num_epochs}")
@@ -92,7 +101,10 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
             lang = batch.pop("language")
             batch = {k: v.to(device) for k, v in batch.items()}
             outputs = model(**batch)
-            loss = outputs.loss
+            logits = outputs.logits
+            labels = batch["labels"]
+            loss = loss_fn(logits, labels)
+
             loss.backward()
             optimizer.step()
             lr_scheduler.step()
