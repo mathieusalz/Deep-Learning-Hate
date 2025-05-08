@@ -15,7 +15,7 @@ from tqdm import tqdm
 from training_utils import evaluate
 
 
-def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_decay, freeze):
+def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_decay, freeze = False):
     # Load datasets
     train_df = pd.read_csv("processed_data/train.csv")
     val_df = pd.read_csv("processed_data/val.csv")
