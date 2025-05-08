@@ -3,7 +3,7 @@ from sklearn.metrics import accuracy_score, classification_report, f1_score
 from collections import defaultdict
 from tqdm import tqdm
 
-def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang"):
+def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang", eval_metric = "accuracy"):
     model.eval()
 
     if eval_type == "per-lang":
@@ -11,7 +11,7 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang"):
         with torch.no_grad():
             for batch in dataloader:
                 lang = batch.pop("language")
-                batch = {k: v.to(device) for k, v in batch.items()}
+                batch = {k: v.to(device) if hasattr(v, 'to') else v for k, v in batch.items()}
                 outputs = model(**batch)
                 logits = outputs.logits
                 preds = torch.argmax(logits, dim=-1).cpu().numpy()
@@ -21,7 +21,13 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang"):
                 languages.extend(lang)
 
         # Global metrics
-        acc = accuracy_score(references, predictions)
+        if (eval_metric == "f1"):
+            metric = f1_score(references, predictions, average = 'macro')
+        else :
+            eval_metric = "accuracy"
+            metric = accuracy_score(references, predictions)
+        
+        
         report = classification_report(references, predictions, target_names=label_encoder.classes_)
 
         # Per-language metrics
@@ -42,7 +48,7 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang"):
             )
             per_language_reports[lang] = (acc_lang, report_lang)
 
-        print(f"\nValidation Accuracy: {acc:.4f}")
+        print(f"\nValidation " + eval_metric + " : {metric:.4f}")
         print(report)
 
         print("\nPer-language reports:")
@@ -55,17 +61,23 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang"):
         predictions, references = [], []
         with torch.no_grad():
             for batch in dataloader:
-                batch = {k: v.to(device) for k, v in batch.items()}
+                lang = batch.pop("language")
+                batch = {k: v.to(device) if hasattr(v, 'to') else v for k, v in batch.items()}
                 outputs = model(**batch)
                 logits = outputs.logits
                 preds = torch.argmax(logits, dim=-1).cpu().numpy()
                 labels = batch["labels"].cpu().numpy()
                 predictions.extend(preds)
                 references.extend(labels)
-        acc = accuracy_score(references, predictions)
+        
+        if (eval_metric == "f1"):
+            metric = f1_score(references, predictions, average='macro')
+        else :
+            eval_metric = "accuracy"
+            metric = accuracy_score(references, predictions)
         report = classification_report(references, predictions, target_names=label_encoder.classes_)
 
-        print(f"\nValidation Accuracy: {acc:.4f}")
+        print(f"\nValidation " + eval_metric + ": {metric:.4f}")
         print(report)
 
-    return acc
+    return metric

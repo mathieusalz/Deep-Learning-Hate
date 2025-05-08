@@ -125,9 +125,9 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
             optimizer.zero_grad()
             loop.set_postfix(loss=loss.item())
 
-        val_acc = evaluate(model, val_dataloader, label_encoder, device, eval_type)
+        val_metric = evaluate(model, val_dataloader, label_encoder, device, eval_type, "f1")
 
-    return val_acc
+    return val_metric
 
 
 if __name__ == '__main__':
