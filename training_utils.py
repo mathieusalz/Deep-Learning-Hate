@@ -1,5 +1,5 @@
 import torch
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, f1_score
 from collections import defaultdict
 from tqdm import tqdm
 
