@@ -18,17 +18,19 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
     # Load datasets
     train_dataset, val_dataset, test_dataset = get_data(debug)
 
+    # Get device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Tokenizer and label encoding
     tokenizer = BertTokenizer.from_pretrained(pretrain)
-
     label_encoder = LabelEncoder()
     label_encoder.fit(train_dataset["target"])
+    num_labels = len(label_encoder.classes_)
 
+    # Get dataloaders
     train_dataloader, val_dataloader, test_dataloader = get_dataloaders(tokenizer, label_encoder, batch_size, train_dataset, val_dataset, test_dataset)
 
-    num_labels = len(label_encoder.classes_)
+    # Create model
     model = BertForSequenceClassification.from_pretrained(pretrain, num_labels=num_labels)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
@@ -36,23 +38,26 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
     if freeze:
         freeze_model(model)
 
+    # Set up Optimizer and LR scheduling
     optimizer = AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-
     lr_scheduler = get_scheduler(
         name="linear", optimizer=optimizer,
         num_warmup_steps=0,
         num_training_steps=len(train_dataloader) * num_epochs
     )
 
+    # Set up loss function (w/ or w/o classImbal)
     if classImbal:
         class_weights = get_class_weights(train_dataset, device)
         loss_fn = torch.nn.CrossEntropyLoss(weight = class_weights, reduction='none')
     else:
         loss_fn = torch.nn.CrossEntropyLoss(reduction='none')
 
+    # Calculate language weights - if needed
     if langImbal:
         lang_weights = get_language_weights(train_dataset)
 
+    # Main Training Loop
     for epoch in range(num_epochs):
         model.train()
         loop = tqdm(train_dataloader, desc=f"Epoch {epoch+1}/{num_epochs}")
