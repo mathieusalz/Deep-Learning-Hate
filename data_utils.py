@@ -26,7 +26,7 @@ def get_data(debug = False):
 
     return train_dataset, val_dataset, test_dataset
 
-def language_weights(data):
+def get_language_weights(data):
 
     lang_counts = pd.Series(data['language']).value_counts()
     lang_weights = 1.0 / lang_counts

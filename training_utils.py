@@ -81,3 +81,11 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang", e
         print(report)
 
     return metric
+
+def freeze_model(model):
+
+    for param in model.bert.parameters():
+        param.requires_grad = False
+
+    for param in model.classifier.parameters():
+        param.requires_grad = True
