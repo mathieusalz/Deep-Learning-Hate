@@ -45,6 +45,7 @@ def training(eval_type,
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
+    # Freeze first layers for quicker training
     if freeze:
         freeze_model(model)
 
