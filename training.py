@@ -14,7 +14,17 @@ from training_utils import evaluate, freeze_model
 from data_utils import get_data, get_language_weights, get_dataloaders, get_class_weights
 
 
-def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_decay, freeze = False, debug = False, classImbal = True, langImbal = True):
+def training(eval_type, 
+             pretrain, 
+             batch_size, 
+             learning_rate, 
+             num_epochs, 
+             weight_decay, 
+             freeze = False, 
+             debug = False, 
+             classImbal = True, 
+             langImbal = True):
+    
     # Load datasets
     train_dataset, val_dataset, test_dataset = get_data(debug)
 
