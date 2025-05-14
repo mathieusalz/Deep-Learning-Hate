@@ -13,19 +13,12 @@ from sklearn.utils.class_weight import compute_class_weight
 from tqdm import tqdm
 
 from training_utils import evaluate
+from data_utils import get_data, language_weights
 
 
-def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_decay, freeze = False):
+def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_decay, freeze = False, debug = False):
     # Load datasets
-    train_df = pd.read_csv("processed_data/train.csv")
-    val_df = pd.read_csv("processed_data/val.csv")
-    test_df = pd.read_csv("processed_data/test.csv")
-
-    train_dataset = Dataset.from_pandas(train_df)
-    val_dataset = Dataset.from_pandas(val_df)
-    test_dataset = Dataset.from_pandas(test_df)
-
-    print(f"Size Training Set: {len(train_dataset)} \t Size Validation Set: {len(val_dataset)} \t Size Test Set: {len(test_dataset)}")
+    train_dataset, val_dataset, test_dataset = get_data(debug)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -35,9 +28,7 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
     # class_weights = torch.tensor(class_weights, dtype=torch.float).to(device)
 
 
-    lang_counts = train_df['language'].value_counts()
-    lang_weights = 1.0 / lang_counts
-    lang_weights = (lang_weights / lang_weights.sum()).to_dict()  # normalize
+    lang_weights = language_weights(train_dataset)
 
     # Tokenizer and label encoding
     tokenizer = BertTokenizer.from_pretrained(pretrain)
@@ -64,16 +55,20 @@ def training(eval_type, pretrain, batch_size, learning_rate, num_epochs, weight_
         batch_padded["language"] = languages
         return batch_padded
 
+    columns_to_remove = ["tweet", "target"]
+    if "__index_level_0__" in train_dataset.column_names:
+        columns_to_remove.append("__index_level_0__")
+
     train_dataloader = DataLoader(
-        train_dataset.remove_columns(["tweet", "target"]),
+        train_dataset.remove_columns(columns_to_remove),
         batch_size=batch_size, shuffle=True, collate_fn=data_collator_with_language)
 
     val_dataloader = DataLoader(
-        val_dataset.remove_columns(["tweet", "target"]),
+        val_dataset.remove_columns(columns_to_remove),
         batch_size=batch_size, collate_fn=data_collator_with_language)
 
     test_dataloader = DataLoader(
-        test_dataset.remove_columns(["tweet", "target"]),
+        test_dataset.remove_columns(columns_to_remove),
         batch_size=batch_size, collate_fn=data_collator_with_language)
 
     num_labels = len(label_encoder.classes_)
@@ -139,8 +134,12 @@ if __name__ == '__main__':
     parser.add_argument("--num_epochs", type=int, default=8, help="Number of training epochs")
     parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay")
     parser.add_argument("--freeze", type=bool , default = False, help="Freeze BERT layers")
+    parser.add_argument("--debug", type=bool , default = False, help="Debug Training")
 
     args = parser.parse_args()
+
+    if args.debug:
+        print("In DEBUG mode")
 
     training(
         eval_type=args.eval_type,
@@ -149,5 +148,6 @@ if __name__ == '__main__':
         learning_rate=args.learning_rate,
         num_epochs=args.num_epochs,
         weight_decay=args.weight_decay,
-        freeze=args.freeze
+        freeze=args.freeze,
+        debug = args.debug
     )
