@@ -89,6 +89,27 @@ def mhs_preprocess(path):
 
     return df_final_english
 
+def OSACT_preprocess(path1, path2):
+    df_OSACT = pd.concat([pd.read_csv(path1), pd.read_csv(path2)])
+
+    df_OSACT = df_OSACT[df_OSACT['HateSpeech'].isin(['HS1', 'HS2', 'HS3', 'HS4', 'HS5', 'HS6'])].copy()
+
+    category_mapping = {
+        "HS1": "origin",
+        "HS2": "religion",
+        "HS3": "other",       # ideology → other
+        "HS4": "disability",
+        "HS5": "other",       # social class → other
+        "HS6": "gender_sexual_orientation"
+    }
+    df_OSACT["target"] = df_OSACT["HateSpeech"].map(category_mapping)
+
+    df_OSACT["language"] = "arabic"
+    df_OSACT.rename(columns={"Text": "tweet"}, inplace=True)
+
+    df_OSACT_final = df_OSACT[["tweet", "target", "language"]].reset_index(drop=True)
+
+    return df_OSACT_final
 
 def preprocess():
     # Preprocess MLMA datasets
@@ -104,8 +125,11 @@ def preprocess():
     # Preprocess Measuring Hate Speech dataset
     df_mhs = mhs_preprocess("data/measuring-hate-speech.parquet")
 
+    # Preprocess OSACT dataset
+    df_OSACT = OSACT_preprocess("data/OSACT22Test.csv", "data/OSACT22Validation.csv")
+
     # Combine all the datasets
-    df_all = pd.concat([df_mlma, df_hindi, df_mhs])
+    df_all = pd.concat([df_mlma, df_hindi, df_mhs, df_OSACT])
     df_all = shuffle(df_all, random_state=42).reset_index(drop=True)
 
     # Train/Validation/Test split
