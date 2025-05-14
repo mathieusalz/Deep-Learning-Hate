@@ -1,4 +1,3 @@
-1. save mapping and check if present instead of redoing it each time
-2. create proper cross-nested k-fold cross validation for fine-tuning of hyperparameters
-3. deal with class imbalance (as well as language imbalance)
-4. look into binary classification + multiclass classification using a single BERT model
+1. create proper cross-nested k-fold cross validation for fine-tuning of hyperparameters
+2. look into binary classification + multiclass classification using a single BERT model
+3. English only BERT version

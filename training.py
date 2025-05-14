@@ -26,7 +26,7 @@ def training(eval_type,
              langImbal = True):
     
     # Load datasets
-    train_dataset, val_dataset, test_dataset = get_data(debug)
+    train_dataset, test_dataset = get_data(debug)
 
     # Get device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -38,7 +38,7 @@ def training(eval_type,
     num_labels = len(label_encoder.classes_)
 
     # Get dataloaders
-    train_dataloader, val_dataloader, test_dataloader = get_dataloaders(tokenizer, label_encoder, batch_size, train_dataset, val_dataset, test_dataset)
+    train_dataloader, test_dataloader = get_dataloaders(tokenizer, label_encoder, batch_size, train_dataset, test_dataset)
 
     # Create model
     model = BertForSequenceClassification.from_pretrained(pretrain, num_labels=num_labels)
@@ -92,7 +92,7 @@ def training(eval_type,
             optimizer.zero_grad()
             loop.set_postfix(loss=loss.item())
 
-        val_metric = evaluate(model, val_dataloader, label_encoder, device, eval_type, "f1")
+        val_metric = evaluate(model, train_dataloader, label_encoder, device, eval_type, "f1")
 
     return val_metric
 

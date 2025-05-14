@@ -109,12 +109,10 @@ def preprocess():
     df_all = shuffle(df_all, random_state=42).reset_index(drop=True)
 
     # Train/Validation/Test split
-    train_df, temp_df = train_test_split(df_all, test_size=0.3, random_state=42, stratify=df_all["target"])
-    val_df, test_df = train_test_split(temp_df, test_size=2/3, random_state=42, stratify=temp_df["target"])
+    train_df, test_df = train_test_split(df_all, test_size=0.2, random_state=42, stratify=df_all["target"])
 
     # Save the datasets
     train_df.to_csv("processed_data/train.csv", index=False)
-    val_df.to_csv("processed_data/val.csv", index=False)
     test_df.to_csv("processed_data/test.csv", index=False)
 
 if __name__ == "__main__":

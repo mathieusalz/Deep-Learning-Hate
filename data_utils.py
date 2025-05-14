@@ -9,22 +9,19 @@ import numpy as np
 def get_data(debug = False):
 
     train_data = pd.read_csv("processed_data/train.csv")
-    val_data = pd.read_csv("processed_data/val.csv")
     test_data = pd.read_csv("processed_data/test.csv")
 
     if debug:
 
         train_data = train_data.sample(frac = 0.01, random_state = 1)
-        val_data = val_data.sample(frac = 0.01, random_state = 1)
         test_data = test_data.sample(frac = 0.01, random_state=1)
 
     train_dataset = Dataset.from_pandas(train_data)
-    val_dataset = Dataset.from_pandas(val_data)
     test_dataset = Dataset.from_pandas(test_data)
 
-    print(f"Size Training Set: {len(train_dataset)} \t Size Validation Set: {len(val_dataset)} \t Size Test Set: {len(test_dataset)}")
+    print(f"Size Training Set: {len(train_dataset)} \t Size Test Set: {len(test_dataset)}")
 
-    return train_dataset, val_dataset, test_dataset
+    return train_dataset, test_dataset
 
 def get_language_weights(data):
 
@@ -36,7 +33,7 @@ def get_language_weights(data):
 
     return lang_weights
 
-def get_dataloaders(tokenizer, label_encoder, batch_size, train_dataset, val_dataset, test_dataset):
+def get_dataloaders(tokenizer, label_encoder, batch_size, train_dataset, test_dataset):
 
     def preprocess(example):
         encoding = tokenizer(example["tweet"], truncation=True, padding=False, max_length=128)
@@ -45,7 +42,6 @@ def get_dataloaders(tokenizer, label_encoder, batch_size, train_dataset, val_dat
         return encoding
 
     train_dataset = train_dataset.map(preprocess)
-    val_dataset = val_dataset.map(preprocess)
     test_dataset = test_dataset.map(preprocess)
 
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
@@ -65,15 +61,11 @@ def get_dataloaders(tokenizer, label_encoder, batch_size, train_dataset, val_dat
         train_dataset.remove_columns(columns_to_remove),
         batch_size=batch_size, shuffle=True, collate_fn=data_collator_with_language)
 
-    val_dataloader = DataLoader(
-        val_dataset.remove_columns(columns_to_remove),
-        batch_size=batch_size, collate_fn=data_collator_with_language)
-
     test_dataloader = DataLoader(
         test_dataset.remove_columns(columns_to_remove),
         batch_size=batch_size, collate_fn=data_collator_with_language)
     
-    return train_dataloader, val_dataloader, test_dataloader
+    return train_dataloader, test_dataloader
 
 def get_class_weights(data, device):
 

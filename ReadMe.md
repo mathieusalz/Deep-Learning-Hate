@@ -21,3 +21,13 @@ To create the virtual environment with the proper packages:
     pip install -r requirements.txt
     ```
 
+# Available Transfomer models
+
+## Multilingual
+
+1. bert-base-multilingual-cased
+2. bert-base-multilingual-uncased
+
+## English only
+
+1. 
