@@ -31,6 +31,7 @@ def training(eval_type,
         train_dataset, test_dataset = get_data(debug)
     else:
         train_dataset, test_dataset = datasets
+        print(f"Size K-FOLD Training Set: {len(train_dataset)} \t Size Test Set: {len(test_dataset)}")
 
     # Get device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
