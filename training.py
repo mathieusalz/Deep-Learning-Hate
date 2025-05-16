@@ -23,10 +23,14 @@ def training(eval_type,
              freeze = False, 
              debug = False, 
              classImbal = True, 
-             langImbal = True):
+             langImbal = True,
+             datasets = None):
     
     # Load datasets
-    train_dataset, test_dataset = get_data(debug)
+    if datasets is None:
+        train_dataset, test_dataset = get_data(debug)
+    else:
+        train_dataset, test_dataset = datasets
 
     # Get device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
