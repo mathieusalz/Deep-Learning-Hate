@@ -26,6 +26,9 @@ def training(eval_type,
              langImbal = True,
              datasets = None):
     
+    if debug:
+        print("In DEBUG mode")
+
     # Load datasets
     if datasets is None:
         train_dataset, test_dataset = get_data(debug)
@@ -115,10 +118,7 @@ if __name__ == '__main__':
     parser.add_argument("--classImbal", type=bool , default = False, help="Class Imbalance")
     parser.add_argument("--langImbal", type=bool , default = False, help="Language Imbalance")
 
-    args = parser.parse_args()
-
-    if args.debug:
-        print("In DEBUG mode")
+    args = parser.parse_args()        
 
     print("\n=== Training Configuration ===")
     print(f"Evaluation type     : {args.eval_type}")
