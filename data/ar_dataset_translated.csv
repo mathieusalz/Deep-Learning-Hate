@@ -1,4 +1,4 @@
-HITId,tweet,sentiment,directness,annotator_sentiment,target,group,translated tweet
+HITId,tweet,sentiment,directness,annotator_sentiment,target,group,translated_tweet
 1,صلاة الفجر خير لك من ترديد بول البعير وسبي النساء واغتصاب طفلة نظافة ونشاط وحيوية #عقلانيون,hateful_normal,indirect,shock,gender,individual,"Fajr prayer is better for you than repeating the urine of a camel, the captivity of women, and the rape of a child. Cleanliness, activity and vitality #rationalists"
 2,صراحة نفسي اشوف ولاد الوسخة اللي قالوا مدرب اجنبي منك لله ربنا ياخدك ي… @url,offensive,indirect,anger_confusion_sadness_indifference_disgust,other,other,"Frankly, I want to see the dirty kids who said there is a foreign coach than you, for God’s sake, may God take you... @url"
 3,طيب! هي متبرجة وعبايتها ملونه وطالعة من بيتهم بدون ....... @url,offensive,indirect,indifference,other,individual,good! She is wearing a colorful abaya and leaves their house without ....... @url
@@ -643,7 +643,7 @@ HITId,tweet,sentiment,directness,annotator_sentiment,target,group,translated twe
 642,@user @user @user @user @user @user والله ان بول البعير انظف واشرف منه,abusive_hateful,direct,disgust,origin,individual,"@user @user @user @user @user @user By God, camel urine is cleaner and more honorable than it"
 643,@user @user الفايدة منهم انهم يوروا لامثالكم قيمتكم الحقيقية ولانسيتوا لما كنتوا تشربوا بول البعير و… @user,offensive,indirect,indifference,other,other,@user @user The benefit of them is that they show people like you your true value and you have not forgotten when you used to drink camel urine and… @user
 644,بعد المدارس وذهاب الازواج للدوام اغلب الحريم تفقد الحنية والرومانسية رغم افضل جوا لها هوا في الصباح فلات… @url,normal,indirect,indifference,gender,women,"After school and the couples going to work, most harems lose affection and romance, despite their best atmosphere being in the morning, flat… @url"
-645,@user @user هههههههههههههههههههههههههههههههههههههههههههههههه صاروخ بول البعير إحنا اللي دقينا خشومكم… @url,hateful,indirect,shock_disgust,origin,other,'
+645,@user @user هههههههههههههههههههههههههههههههههههههههههههههههه صاروخ بول البعير إحنا اللي دقينا خشومكم… @url,hateful,indirect,shock_disgust,origin,other,
 646,يواصل مركز #أمان #حملة_لا_تلمسني لتوعية الأطفال ضد التحرش. @url,normal,indirect,indifference,other,other,The #Aman Center continues the #Don't_TouchMe campaign to raise children's awareness against harassment. @url
 647,@user @user كس امك ياعار هيه عاهره صاقطه شجاب ذولى عليهم بس انته جماعة #بول_البعير_تموتون_من_الشيعه ي… @url,abusive,direct,shock_disgust,other,individual,"@user @user Your mother's pussy, what a disgrace, she is a bastard whore, shame on them, but you are the group of #camel_url_you_die_from_the_Shiites, oh… @url"
 648,@user @user بكل اختصار كلما زاد تبرج البنت زادت نسبة احتمال التحرش فيها ..,abusive_normal,direct,indifference,other,women,"@user @user In short, the more a girl dresses up, the more likely she is to be harassed."
