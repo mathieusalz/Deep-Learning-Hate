@@ -5,6 +5,7 @@ from transformers import DataCollatorWithPadding
 import torch
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
+from datasets.utils.logging import disable_progress_bar
 
 def get_data(debug = False):
 
@@ -42,6 +43,8 @@ def get_dataloaders(tokenizer, label_encoder, batch_size, train_dataset, test_da
         encoding["language"] = example["language"]
         return encoding
 
+    disable_progress_bar()
+    
     train_dataset = train_dataset.map(preprocess)
     test_dataset = test_dataset.map(preprocess)
 

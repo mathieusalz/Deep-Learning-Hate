@@ -19,18 +19,14 @@ def objective(trial):
     weight_decay = trial.suggest_float("weight_decay", 0.0, 0.1)
     classImbal = trial.suggest_categorical("classImbal", [True, False])
     langImbal = trial.suggest_categorical("langImbal", [True, False])
-    #num_epochs = trial.suggest_int("num_epochs", 3, 10)
-    num_epochs = 1
+    freeze = trial.suggest_categorical("freeze", [True, False])
+    num_epochs = trial.suggest_int("num_epochs", 4, 10)
+    #num_epochs = 1
     pretrain = "bert-base-multilingual-cased"
     eval_type = "global"
 
     # Get full dataset
-    full_train_dataset, _ = get_data(debug = True)  
-
-
-
-
-
+    full_train_dataset, _ = get_data(debug = False)  
 
 
     # Convert to numpy indices for KFold
@@ -81,7 +77,7 @@ def objective(trial):
             loss_fn,
             num_epochs,
             eval_type,
-            freeze = False,
+            freeze = freeze,
         )
         val_metrics.append(val_acc)
 

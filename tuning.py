@@ -15,7 +15,7 @@ def objective(trial):
     eval_type = "global"
 
     # Get full dataset
-    full_train_dataset, _ = get_data(debug = True)  
+    full_train_dataset, _ = get_data(debug = False)  
 
     # Convert to numpy indices for KFold
     kf = KFold(n_splits=5, shuffle=True, random_state=42)

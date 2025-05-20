@@ -1,3 +1,1 @@
-1. create proper cross-nested k-fold cross validation for fine-tuning of hyperparameters
-2. look into binary classification + multiclass classification using a single BERT model
-3. English only BERT version
+1. look into binary classification + multiclass classification using a single BERT model

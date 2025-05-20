@@ -13,6 +13,9 @@ from tqdm import tqdm
 from training_utils import evaluate, freeze_model
 from data_utils2 import get_data, get_language_weights, get_dataloaders, get_class_weights
 
+from datasets.utils.logging import disable_progress_bar
+from datasets.utils.logging import set_verbosity_error
+
 
 def training(model,
              train_loader,
@@ -26,6 +29,9 @@ def training(model,
              freeze = False, 
              debug = False):
     
+    disable_progress_bar()
+    set_verbosity_error()
+
     if debug:
         print("In DEBUG mode")
 
@@ -45,8 +51,8 @@ def training(model,
     # Main Training Loop
     for epoch in range(num_epochs):
         model.train()
-        loop = tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}")
-        for batch in loop:
+        loop = tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}", disable = True)
+        for i,batch in enumerate(loop):
             languages = batch.pop("language")
             batch = {k: v.to(device) for k, v in batch.items()}
             outputs = model(**batch)
@@ -60,9 +66,11 @@ def training(model,
             optimizer.step()
             lr_scheduler.step()
             optimizer.zero_grad()
-            loop.set_postfix(loss=loss.item())
 
-        val_metric = evaluate(model, train_loader, label_encoder, device, eval_type, "f1")
+            if i % 250 == 0:
+                print(f"Epoch {epoch+1}, Batch {i}, Loss: {loss.item():.4f}", flush=True)
+
+        val_metric = evaluate(model, val_loader, label_encoder, device, eval_type, "f1")
 
     return val_metric
 

@@ -48,13 +48,15 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang", e
             )
             per_language_reports[lang] = (acc_lang, report_lang)
 
-        print(f"\nValidation " + eval_metric + " : {metric:.4f}")
-        print(report)
-
+        
+        print(f"\nValidation {eval_metric} : {metric:.4f}")
+        #print(report)
+        '''
         print("\nPer-language reports:")
         for lang, (acc_lang, report_lang) in per_language_reports.items():
             print(f"\n🔸 Language: {lang} — Accuracy: {acc_lang:.4f}")
             print(report_lang)
+        '''
     
     else:
 
@@ -77,8 +79,10 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang", e
             metric = accuracy_score(references, predictions)
         report = classification_report(references, predictions, target_names=label_encoder.classes_)
 
-        print(f"\nValidation " + eval_metric + ": {metric:.4f}")
-        print(report)
+        
+        print(f"\nValidation {eval_metric} : {metric:.4f}")
+        #print(report)
+        
 
     return metric
 
