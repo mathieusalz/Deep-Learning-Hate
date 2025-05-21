@@ -23,6 +23,23 @@ def get_data(debug = False):
 
     return train_dataset, test_dataset
 
+def get_english_data(debug = False):
+
+    train_data = pd.read_csv("processed_data/train_english.csv")
+    test_data = pd.read_csv("processed_data/test_english.csv")
+
+    if debug:
+
+        train_data = train_data.sample(frac = 0.01, random_state = 1)
+        test_data = test_data.sample(frac = 0.01, random_state=1)
+
+    train_dataset = Dataset.from_pandas(train_data)
+    test_dataset = Dataset.from_pandas(test_data)
+
+    print(f"Size Training Set: {len(train_dataset)} \t Size Test Set: {len(test_dataset)}")
+
+    return train_dataset, test_dataset
+
 def get_language_weights(data):
 
     lang_counts = pd.Series(data['language']).value_counts()
