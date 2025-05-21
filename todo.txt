@@ -1,3 +1,23 @@
 1. create proper cross-nested k-fold cross validation for fine-tuning of hyperparameters
 2. look into binary classification + multiclass classification using a single BERT model
 3. English only BERT version
+
+
+
+TODO last week :
+- modifier finetune pour BERT en anglais pour qu'il soit runnable //Fabien
+- finetune BERT anglais //Mathieu
+- baseline with a non transformer model //Mathieu
+- train the model on all language except 1 and evaluate on the language that he has never seen//Timothée
+- poster//tout le monde
+- bonus : add some layers to BERT//Mathieu
+- train on multiple random seeds to get confidence interval
+    - faire une loop sur beaucoup de seeds pour avoir plusieurs résultats (changer la random_seed et faire un training complet)
+    - calculer les intervalles de confiance pour le f1 score
+    - plot la training et validation loss sur les epochs avec les intervalles de confiance
+
+Limitations :
+- train avec un plus petit set de données pour faire la comparaison et montrer que plus de donnée -> meilleurs résultats //Timothée
+- mauvaise annotation des datasets
+- un seul BERT -> maybe avoir un tokenizer spécialisé dans les langues sur lesquelles on train
+- 
