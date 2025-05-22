@@ -7,7 +7,6 @@
 TODO last week :
 - modifier finetune pour BERT en anglais pour qu'il soit runnable //Fabien
 - finetune BERT anglais //Mathieu
-- baseline with a non transformer model //Mathieu
 - train the model on all language except 1 and evaluate on the language that he has never seen//Timothée
 - poster//tout le monde
 - bonus : add some layers to BERT//Mathieu
