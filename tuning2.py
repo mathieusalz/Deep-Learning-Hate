@@ -1,3 +1,4 @@
+import argparse
 import optuna
 from training2 import training
 from data_utils2 import get_data, get_dataloaders
@@ -9,7 +10,7 @@ from transformers import BertTokenizer, BertForSequenceClassification
 from torch.optim import AdamW
 
 
-def objective(trial):
+def objective(trial, pretrain):
 
     # Get device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -21,17 +22,10 @@ def objective(trial):
     langImbal = trial.suggest_categorical("langImbal", [True, False])
     #num_epochs = trial.suggest_int("num_epochs", 3, 10)
     num_epochs = 1
-    pretrain = "bert-base-multilingual-cased"
     eval_type = "global"
 
     # Get full dataset
     full_train_dataset, _ = get_data(debug = True)  
-
-
-
-
-
-
 
     # Convert to numpy indices for KFold
     kf = KFold(n_splits=5, shuffle=True, random_state=42)
@@ -88,8 +82,13 @@ def objective(trial):
     return np.mean(val_metrics)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Fine-tuning of BERT model with configurable parameters")
+    parser.add_argument("--pretrain", type=str, default="bert-base-multilingual-cased", help="Pretrained model name")
+
+    args = parser.parse_args()
+
     study = optuna.create_study(direction="maximize")
-    study.optimize(objective, n_trials=20)
+    study.optimize(lambda trial: objective(trial, args.pretrain), n_trials=20)
 
     print("Best trial:")
     print(study.best_trial)
