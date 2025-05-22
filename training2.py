@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm
 
 from training_utils import evaluate, freeze_model
-from data_utils2 import get_data, get_language_weights, get_dataloaders, get_class_weights
+from data_utils2 import get_data, get_english_data, get_language_weights, get_dataloaders, get_class_weights
 
 from datasets.utils.logging import disable_progress_bar
 from datasets.utils.logging import set_verbosity_error
@@ -102,11 +102,19 @@ if __name__ == '__main__':
     print(f"Class imbalance     : {args.classImbal}")
     print(f"Language imbalance  : {args.langImbal}")
     print("===============================\n")
-    
+
     # Get device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    train_dataset, test_dataset = get_data(args.debug)
+    if args.pretrain == "bert-base-multilingual-cased":
+        train_dataset, test_dataset = get_data(args.debug)
+        print(f"\nLoaded multilingual data.\n")
+    elif args.pretrain == "bert-base-uncased" or args.pretrain == "bert-large-uncased":
+        train_dataset, test_dataset = get_english_data(args.debug)
+        print(f"\nLoaded translated data.\n")
+    else:
+        train_dataset, test_dataset = get_data(args.debug)
+        print(f"\nUnrecognized model. Loaded multilingual data.\n")
 
     # Tokenizer and label encoding
     tokenizer = BertTokenizer.from_pretrained(args.pretrain)

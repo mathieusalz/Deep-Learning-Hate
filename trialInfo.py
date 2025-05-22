@@ -1,8 +1,8 @@
 import re
 
 # Input and output file paths
-input_file = "slurm-2642404.out"
-output_file = "filtered_trials.txt"
+input_file = "slurm-2643744.out"
+output_file = "filtered_trials2.txt"
 
 # Regex pattern for lines like:
 # [I 2025-05-20 10:54:34,264] Trial 0 finished with value: ...

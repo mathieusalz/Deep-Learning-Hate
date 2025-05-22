@@ -14,16 +14,16 @@ def objective(trial):
     # Get device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    batch_size = trial.suggest_categorical("batch_size", [8, 16, 32])
-    learning_rate = trial.suggest_float("learning_rate", 1e-5, 5e-5, log=True)
-    weight_decay = trial.suggest_float("weight_decay", 0.0, 0.1)
+    batch_size = trial.suggest_categorical("batch_size", [8, 16, 32, 64])
+    learning_rate = trial.suggest_float("learning_rate", 1e6, 1e-4, log=True)
+    weight_decay = trial.suggest_float("weight_decay", 0.0, 0.3)
     classImbal = trial.suggest_categorical("classImbal", [True, False])
     langImbal = trial.suggest_categorical("langImbal", [True, False])
     freeze = trial.suggest_categorical("freeze", [True, False])
     num_epochs = trial.suggest_int("num_epochs", 4, 10)
     #num_epochs = 1
     pretrain = "bert-base-multilingual-cased"
-    eval_type = "global"
+    eval_type = "per-lang"
 
     # Get full dataset
     full_train_dataset, _ = get_data(debug = False)  
