@@ -74,35 +74,7 @@ def training(model,
 
     return val_metric
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Fine-tune BERT model with configurable parameters")
-    parser.add_argument("--eval_type", type=str, default="per-lang", help="Evaluation type")
-    parser.add_argument("--pretrain", type=str, default="bert-base-multilingual-cased", help="Pretrained model name")
-    parser.add_argument("--batch_size", type=int, default=16, help="Batch size")
-    parser.add_argument("--learning_rate", type=float, default=2e-5, help="Learning rate")
-    parser.add_argument("--num_epochs", type=int, default=8, help="Number of training epochs")
-    parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay")
-    parser.add_argument("--freeze", type=bool , default = False, help="Freeze BERT layers")
-    parser.add_argument("--debug", action="store_true", help="Debug Training")
-    parser.add_argument("--classImbal", action="store_true", help="Class Imbalance")
-    parser.add_argument("--langImbal", action = "store_true", help="Language Imbalance")
-
-    args = parser.parse_args()        
-
-    print("\n=== Training Configuration ===")
-    print(f"Evaluation type     : {args.eval_type}")
-    print(f"Pretrained model    : {args.pretrain}")
-    print(f"Batch size          : {args.batch_size}")
-    print(f"Learning rate       : {args.learning_rate}")
-    print(f"Number of epochs    : {args.num_epochs}")
-    print(f"Weight decay        : {args.weight_decay}")
-    print(f"Freeze BERT layers  : {args.freeze}")
-    print(f"Debug mode          : {args.debug}")
-    print(f"Class imbalance     : {args.classImbal}")
-    print(f"Language imbalance  : {args.langImbal}")
-    print("===============================\n")
-
+def train_model_with_args(args):
     # Get device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -139,7 +111,7 @@ if __name__ == '__main__':
     #Setup loss function
     loss_fn = torch.nn.CrossEntropyLoss(reduction='none')
 
-    training(model,
+    metric = training(model,
              train_loader,
              test_loader,
              optimizer,
@@ -151,3 +123,35 @@ if __name__ == '__main__':
              freeze=args.freeze,
              debug = args.debug,
         )
+
+    return metric
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Fine-tune BERT model with configurable parameters")
+    parser.add_argument("--eval_type", type=str, default="per-lang", help="Evaluation type")
+    parser.add_argument("--pretrain", type=str, default="bert-base-multilingual-cased", help="Pretrained model name")
+    parser.add_argument("--batch_size", type=int, default=16, help="Batch size")
+    parser.add_argument("--learning_rate", type=float, default=2e-5, help="Learning rate")
+    parser.add_argument("--num_epochs", type=int, default=8, help="Number of training epochs")
+    parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay")
+    parser.add_argument("--freeze", type=bool , default = False, help="Freeze BERT layers")
+    parser.add_argument("--debug", action="store_true", help="Debug Training")
+    parser.add_argument("--classImbal", action="store_true", help="Class Imbalance")
+    parser.add_argument("--langImbal", action = "store_true", help="Language Imbalance")
+
+    args = parser.parse_args()        
+
+    print("\n=== Training Configuration ===")
+    print(f"Evaluation type     : {args.eval_type}")
+    print(f"Pretrained model    : {args.pretrain}")
+    print(f"Batch size          : {args.batch_size}")
+    print(f"Learning rate       : {args.learning_rate}")
+    print(f"Number of epochs    : {args.num_epochs}")
+    print(f"Weight decay        : {args.weight_decay}")
+    print(f"Freeze BERT layers  : {args.freeze}")
+    print(f"Debug mode          : {args.debug}")
+    print(f"Class imbalance     : {args.classImbal}")
+    print(f"Language imbalance  : {args.langImbal}")
+    print("===============================\n")
+
+    train_model_with_args(args)

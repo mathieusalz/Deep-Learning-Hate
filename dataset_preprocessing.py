@@ -197,7 +197,7 @@ def id_translated_preprocess(path):
 '''
 Main preprocess functions
 '''
-def preprocess_multilingual():
+def preprocess_multilingual(seed=42):
     # Preprocess MLMA datasets
     df_en = mlma_preprocess("data/en_dataset.csv", 'english')
     df_fr = mlma_preprocess("data/fr_dataset.csv", 'french')
@@ -216,7 +216,7 @@ def preprocess_multilingual():
 
     # Combine all the datasets
     df_all = pd.concat([df_mlma, df_hindi, df_mhs, df_OSACT])
-    df_all = shuffle(df_all, random_state=42).reset_index(drop=True)
+    df_all = shuffle(df_all, random_state=seed).reset_index(drop=True)
 
     # Train/Validation/Test split
     train_df, test_df = train_test_split(df_all, test_size=0.2, random_state=42, stratify=df_all["target"])
@@ -225,7 +225,7 @@ def preprocess_multilingual():
     train_df.to_csv("processed_data/train.csv", index=False)
     test_df.to_csv("processed_data/test.csv", index=False)
 
-def preprocess_english():
+def preprocess_english(seed=42):
     # Preprocess MLMA datasets
     df_en = mlma_preprocess("data/en_dataset.csv", 'english')
     df_fr = mlma_translated_preprocess("data/fr_dataset_translated.csv", 'french')
@@ -244,7 +244,7 @@ def preprocess_english():
 
     # Combine all the datasets
     df_all = pd.concat([df_mlma, df_hindi, df_mhs, df_OSACT])
-    df_all = shuffle(df_all, random_state=42).reset_index(drop=True)
+    df_all = shuffle(df_all, random_state=seed).reset_index(drop=True)
 
     # Train/Validation/Test split
     train_df, test_df = train_test_split(df_all, test_size=0.2, random_state=42, stratify=df_all["target"])
