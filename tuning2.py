@@ -15,7 +15,7 @@ def objective(trial):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     batch_size = trial.suggest_categorical("batch_size", [8, 16, 32, 64])
-    learning_rate = trial.suggest_float("learning_rate", 1e6, 1e-4, log=True)
+    learning_rate = trial.suggest_float("learning_rate", 1e-6, 1e-4, log=True)
     weight_decay = trial.suggest_float("weight_decay", 0.0, 0.3)
     classImbal = trial.suggest_categorical("classImbal", [True, False])
     langImbal = trial.suggest_categorical("langImbal", [True, False])

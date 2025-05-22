@@ -20,9 +20,12 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang", e
                 references.extend(labels)
                 languages.extend(lang)
 
+        metric_global = f1_score(references, predictions, average = 'macro')
+        print(f"\nGlobal Validation {eval_metric} : {metric_global:.4f}")
+        
         # Global metrics
         if (eval_metric == "f1"):
-            metric = f1_score(references, predictions, average = 'macro')
+            metric_global = f1_score(references, predictions, average = 'macro')
         else :
             eval_metric = "accuracy"
             metric = accuracy_score(references, predictions)
@@ -42,7 +45,8 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang", e
         for lang, data in lang_results.items():
             acc_lang = accuracy_score(data["refs"], data["preds"])
             lang_nums += 1
-            f1_total_lang += f1_score(data["refs"], data["preds"], average = 'macro')
+            f1score = f1_score(data["refs"], data["preds"], average = 'macro')
+            f1_total_lang += f1score
             report_lang = classification_report(
             data["refs"],
             data["preds"],  
@@ -51,6 +55,7 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang", e
             zero_division=0
             )
             per_language_reports[lang] = (acc_lang, report_lang)
+            print(f"\n🔸 Language: {lang} — F1: {f1score:.4f}")
 
         eval_metric = 'f1-lang average'
         metric = f1_total_lang / lang_nums
