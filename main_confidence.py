@@ -64,7 +64,7 @@ if __name__ == '__main__':
     std = np.std(metrics) #standard deviation
     n=len(metrics)
     conf_int_gaussian = norm.interval(confidence, loc=mean_metric, scale=std/np.sqrt(n))
-    conf_int_student = stats.t.interval(0.95, len(metrics)-1, loc=mean_metric, scale=std/np.sqrt(n))
+    conf_int_student = stats.t.interval(confidence, len(metrics)-1, loc=mean_metric, scale=std/np.sqrt(n))
 
     print(f"Mean: {mean_metric:.4f}")
     print(f"{confidence*100:.0f}% Confidence Interval (Student's t): [{conf_int_student[0]:.4f}, {conf_int_student[1]:.4f}]")
