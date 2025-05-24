@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import torch
 import random
+import json
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
 from scipy import stats
@@ -57,6 +58,17 @@ if __name__ == '__main__':
 
     print(f"All metrics: {all_metrics}")
 
+    with open('./logs/metrics_log.json', 'a') as f:
+        for metric in all_metrics:
+            json.dump(metric, f)
+            f.write('\n')
+        
+    all_metrics = []
+    with open('./logs/metrics_log.json', 'r') as f:
+        for line in f:
+            data = json.loads(line)
+            all_metrics.append(data)
+
     confidence = 0.95 #confidence interval
 
     metrics = np.array(all_metrics)
@@ -89,5 +101,5 @@ if __name__ == '__main__':
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig("confidence_intervals.png", dpi=600)
+    plt.savefig(".logs/confidence_intervals.png", dpi=600)
     plt.show()
