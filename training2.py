@@ -79,13 +79,13 @@ def train_model_with_args(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     if args.pretrain == "bert-base-multilingual-cased":
-        train_dataset, test_dataset = get_data(args.debug)
+        train_dataset, test_dataset = get_data(args.debug, args.smallData)
         print(f"\nLoaded multilingual data.\n")
     elif args.pretrain == "bert-base-uncased" or args.pretrain == "bert-large-uncased":
-        train_dataset, test_dataset = get_english_data(args.debug)
+        train_dataset, test_dataset = get_english_data(args.debug, args.smallData)
         print(f"\nLoaded translated data.\n")
     else:
-        train_dataset, test_dataset = get_data(args.debug)
+        train_dataset, test_dataset = get_data(args.debug, args.smallData)
         print(f"\nUnrecognized model. Loaded multilingual data.\n")
 
     # Tokenizer and label encoding
@@ -136,6 +136,7 @@ if __name__ == '__main__':
     parser.add_argument("--weight_decay", type=float, default=0.1, help="Weight decay")
     parser.add_argument("--freeze", type=bool , default = False, help="Freeze BERT layers")
     parser.add_argument("--debug", action="store_true", help="Debug Training")
+    parser.add_argument("--smallData", action="store_true", help="Smaller dataset")
     parser.add_argument("--classImbal", action="store_true", default = True, help="Class Imbalance")
     parser.add_argument("--langImbal", action = "store_true", default = True, help="Language Imbalance")
 
