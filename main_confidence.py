@@ -101,5 +101,5 @@ if __name__ == '__main__':
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(".logs/confidence_intervals.png", dpi=600)
+    plt.savefig("./logs/confidence_intervals.png", dpi=600)
     plt.show()
