@@ -10,4 +10,4 @@
 module purge
 module load gcc cuda openmpi/4.1.3-cuda  
 
-srun VENV/bin/python tuning2.py
+srun VENV/bin/python training2.py --pretrain=bert-base-uncased

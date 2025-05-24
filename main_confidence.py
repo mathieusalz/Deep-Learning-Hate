@@ -22,13 +22,13 @@ if __name__ == '__main__':
     parser.add_argument("--eval_type", type=str, default="per-lang", help="Evaluation type")
     parser.add_argument("--pretrain", type=str, default="bert-base-multilingual-cased", help="Pretrained model name")
     parser.add_argument("--batch_size", type=int, default=16, help="Batch size")
-    parser.add_argument("--learning_rate", type=float, default=2e-5, help="Learning rate")
-    parser.add_argument("--num_epochs", type=int, default=8, help="Number of training epochs")
-    parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay")
+    parser.add_argument("--learning_rate", type=float, default=4e-6, help="Learning rate")
+    parser.add_argument("--num_epochs", type=int, default=6, help="Number of training epochs")
+    parser.add_argument("--weight_decay", type=float, default=0.1, help="Weight decay")
     parser.add_argument("--freeze", type=bool , default = False, help="Freeze BERT layers")
     parser.add_argument("--debug", action="store_true", help="Debug Training")
-    parser.add_argument("--classImbal", action="store_true", help="Class Imbalance")
-    parser.add_argument("--langImbal", action = "store_true", help="Language Imbalance")
+    parser.add_argument("--classImbal", action="store_true", default = True, help="Class Imbalance")
+    parser.add_argument("--langImbal", action = "store_true", default = True, help="Language Imbalance")
 
     args = parser.parse_args()        
 
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     print("===============================\n")
 
     all_metrics = []
-    number_of_trainings = 10
+    number_of_trainings = 8
     seeds = list(range(number_of_trainings))
     for seed in seeds:
         print(f"Running seed {seed}")
