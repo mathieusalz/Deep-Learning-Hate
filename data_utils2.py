@@ -7,16 +7,18 @@ from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
 from datasets.utils.logging import disable_progress_bar
 
-def get_data(debug = False):
+def get_data(debug = False, small_Data = False):
 
     train_data = pd.read_csv("processed_data/train.csv")
     test_data = pd.read_csv("processed_data/test.csv")
 
     if debug:
-
         train_data = train_data.sample(frac = 0.01, random_state = 1)
         test_data = test_data.sample(frac = 0.01, random_state=1)
-
+    elif small_Data:
+        train_data = train_data.sample(frac = 0.4, random_state = 1)
+        test_data = test_data.sample(frac = 0.4, random_state=1)
+    
     train_dataset = Dataset.from_pandas(train_data)
     test_dataset = Dataset.from_pandas(test_data)
 

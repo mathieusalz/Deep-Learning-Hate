@@ -2,6 +2,7 @@ TODO last week :
 - train the model on all language except 1 and evaluate on the language that he has never seen//Timothée
 - poster//tout le monde
 - clean up code and add comments
+- replace 'hindi' by'indonesian'
 
 Limitations :
 - train avec un plus petit set de données pour faire la comparaison et montrer que plus de donnée -> meilleurs résultats //Timothée
