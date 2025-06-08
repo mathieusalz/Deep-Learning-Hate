@@ -22,8 +22,6 @@ def objective(trial, pretrain):
     langImbal = trial.suggest_categorical("langImbal", [True, False])
     freeze = trial.suggest_categorical("freeze", [True, False])
     num_epochs = trial.suggest_int("num_epochs", 4, 10)
-    #num_epochs = 1
-    #pretrain = "bert-base-multilingual-cased"
     eval_type = "per-lang"
 
     # Get full dataset
@@ -49,7 +47,7 @@ def objective(trial, pretrain):
         num_labels = len(label_encoder.classes_)
 
 
-            # Get dataloaders
+        # Get dataloaders
         train_loader, val_loader = get_dataloaders(
         tokenizer, label_encoder, batch_size,
         train_fold, val_fold,

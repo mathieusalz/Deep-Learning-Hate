@@ -10,8 +10,8 @@ Preprocessing of multilingual model
 '''
 def mlma_preprocess(path, language):
     df = pd.read_csv(path)
-    df = df[df["sentiment"] != "normal"]  # Supprimer les tweets non haineux
-    df = df[["tweet", "target"]]  # Garder seulement les colonnes nécessaires
+    df = df[df["sentiment"] != "normal"]  # Remove non hateful tweets
+    df = df[["tweet", "target"]]  # We keep only necessary columns
     df['target'] = df['target'].replace({'sexual_orientation': 'gender_sexual_orientation'})
     df['target'] = df['target'].replace({'gender': 'gender_sexual_orientation'})
     df['language'] = language 
@@ -51,7 +51,7 @@ def id_preprocess(path):
 
     # Keep only relevant columns for mBERT
     df_id = df_id[['Tweet', 'target']].rename(columns={'Tweet': 'tweet'})
-    df_id['language'] = 'hindi'
+    df_id['language'] = 'indonesian'
     df_id = df_id.dropna()
 
     return df_id
@@ -101,9 +101,9 @@ def OSACT_preprocess(path1, path2):
     category_mapping = {
         "HS1": "origin",
         "HS2": "religion",
-        "HS3": "other",       # ideology → other
+        "HS3": "other",       # ideology => other
         "HS4": "disability",
-        "HS5": "other",       # social class → other
+        "HS5": "other",       # social class => other
         "HS6": "gender_sexual_orientation"
     }
     df_OSACT["target"] = df_OSACT["HateSpeech"].map(category_mapping)
@@ -122,8 +122,8 @@ Preprocessing of english only model
 '''
 def mlma_translated_preprocess(path, language):
     df = pd.read_csv(path)
-    df = df[df["sentiment"] != "normal"]  # Supprimer les tweets non haineux
-    df = df[["translated_tweet", "target"]]  # Garder seulement les colonnes nécessaires
+    df = df[df["sentiment"] != "normal"] # Remove non hateful tweets
+    df = df[["translated_tweet", "target"]] # We keep only relevant columns
     df.rename(columns={'translated_tweet': 'tweet'}, inplace=True)
     df['target'] = df['target'].replace({'sexual_orientation': 'gender_sexual_orientation'})
     df['target'] = df['target'].replace({'gender': 'gender_sexual_orientation'})
@@ -143,9 +143,9 @@ def OSACT_translated_preprocess(path1, path2):
     category_mapping = {
         "HS1": "origin",
         "HS2": "religion",
-        "HS3": "other",       # ideology → other
+        "HS3": "other",       # ideology => other
         "HS4": "disability",
-        "HS5": "other",       # social class → other
+        "HS5": "other",       # social class => other
         "HS6": "gender_sexual_orientation"
     }
     df_OSACT["target"] = df_OSACT["target"].map(category_mapping)
@@ -188,7 +188,7 @@ def id_translated_preprocess(path):
 
     # Keep only relevant columns for mBERT
     df_id = df_id[['translated_tweet', 'target']].rename(columns={'translated_tweet': 'tweet'})
-    df_id['language'] = 'hindi'
+    df_id['language'] = 'indonesian'
     df_id = df_id.dropna()
 
     return df_id
@@ -205,8 +205,8 @@ def preprocess_multilingual(seed=42):
     # ---- Combine MLMA datasets
     df_mlma = pd.concat([df_en, df_fr, df_ar])
 
-    # Preprocess Hindi dataset
-    df_hindi = id_translated_preprocess("data/re_dataset_translated.csv")
+    # Preprocess Indonesian dataset
+    df_id = id_translated_preprocess("data/re_dataset_translated.csv")
 
     # Preprocess Measuring Hate Speech dataset
     df_mhs = mhs_preprocess("data/measuring-hate-speech.parquet")
@@ -215,7 +215,7 @@ def preprocess_multilingual(seed=42):
     df_OSACT = OSACT_preprocess("data/OSACT22Train.csv", "data/OSACT22Validation.csv")
 
     # Combine all the datasets
-    df_all = pd.concat([df_mlma, df_hindi, df_mhs, df_OSACT])
+    df_all = pd.concat([df_mlma, df_id, df_mhs, df_OSACT])
     df_all = shuffle(df_all, random_state=seed).reset_index(drop=True)
 
     # Train/Validation/Test split
@@ -233,8 +233,8 @@ def preprocess_english(seed=42):
     # ---- Combine MLMA datasets
     df_mlma = pd.concat([df_en, df_fr, df_ar])
 
-    # Preprocess Hindi dataset
-    df_hindi = id_preprocess("data/re_dataset.csv")
+    # Preprocess Indonesian dataset
+    df_id = id_preprocess("data/re_dataset.csv")
 
     # Preprocess Measuring Hate Speech dataset
     df_mhs = mhs_preprocess("data/measuring-hate-speech.parquet")
@@ -243,7 +243,7 @@ def preprocess_english(seed=42):
     df_OSACT = OSACT_translated_preprocess("data/OSACT22Train_translated.csv", "data/OSACT22Validation_translated.csv")
 
     # Combine all the datasets
-    df_all = pd.concat([df_mlma, df_hindi, df_mhs, df_OSACT])
+    df_all = pd.concat([df_mlma, df_id, df_mhs, df_OSACT])
     df_all = shuffle(df_all, random_state=seed).reset_index(drop=True)
 
     # Train/Validation/Test split
