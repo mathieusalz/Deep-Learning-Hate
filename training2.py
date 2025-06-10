@@ -94,6 +94,9 @@ def training(model,
     df_val = pd.DataFrame.from_dict(results_val)
     df_val.to_csv("./logs/val_metric_hist.csv", index=False)
 
+    # Save the trained model's state_dict
+    torch.save(model.state_dict(), "logs/model_checkpoint.pth")
+
     return val_metric
 
 def train_model_with_args(args):
@@ -101,13 +104,13 @@ def train_model_with_args(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     if args.pretrain == "bert-base-multilingual-cased":
-        train_dataset, test_dataset = get_data(args.debug, args.smallData)
+        train_dataset, test_dataset = get_data(args.debug)
         print(f"\nLoaded multilingual data.\n")
     elif args.pretrain == "bert-base-uncased" or args.pretrain == "bert-large-uncased":
         train_dataset, test_dataset = get_english_data(args.debug)
         print(f"\nLoaded translated data.\n")
     else:
-        train_dataset, test_dataset = get_data(args.debug, args.smallData)
+        train_dataset, test_dataset = get_data(args.debug)
         print(f"\nUnrecognized model. Loaded multilingual data.\n")
 
     # Tokenizer and label encoding
