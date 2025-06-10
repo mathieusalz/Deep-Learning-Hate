@@ -41,7 +41,7 @@ The folders are organised as follows:
 
 # Running the code
 
-In order to train a model, the **training.py** file is setup to be run as a script. Both training.py and main_confidence.py accept the following configurable arguments:
+In order to train a model, both **training.py** and **main_confidence.py** files are setup to be run as a script. They accept the following configurable arguments:
 
 - **--eval_type**
 Specifies the evaluation strategy. Options include "per-lang" to compute metrics separately for each language. Default is "per-lang".
@@ -77,4 +77,4 @@ If passed, enables class imbalance handling strategies. Default is True.
 - **--langImbal**
 If passed, enables language imbalance handling. Default is True.
 
-can be set using command line arguments. Files **main_confidence.py** and **tuning2.py** can also be run as scripts, however, the later does not take in command line arguments (as it does a hyperparameter sweep). 
+The file **tuning.py** can also be run as script, however, it does not take in command line arguments (as it does a hyperparameter sweep). 
