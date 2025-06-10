@@ -24,9 +24,9 @@ To create the virtual environment with the proper packages:
 # Code Structure
 
 This project is made up of the follow python files:
-- **dataset_preprocessing.py**: preprocesses all the data to harmonize categories and creates the train and test datasets
-- **data_utils2.py**: preprocesses the data for use by the BERT model
-- **training2.py**: basic training loop for the BERT models
+- **dataset_preprocessing.py**: preprocesses all the data to harmonize categories and saves the train and test datasets to /processed_data
+- **data_utils.py**: preprocesses the data for use by the BERT model
+- **training.py**: basic training loop for the BERT models
 - **training_utils.py**: training utility functions 
 - **finetuning.py**: cross-validation hyperparameter tuning of the models
 - **main_confidence.py**: runs the model with different seeds to determine its confidence intervals
@@ -41,13 +41,40 @@ The folders are organised as follows:
 
 # Running the code
 
-In order to train a model, the **training2.py** file is setup to be run as a script. Hyperparameters such as:
-- pretrained BERT model
-- evaluation type
-- learning rate
-- weight decay
-- number of epoches
-- freezing BERT layers except classification head
-- etc
+In order to train a model, the **training.py** file is setup to be run as a script. Both training.py and main_confidence.py accept the following configurable arguments:
+
+- **--eval_type**
+Specifies the evaluation strategy. Options include "per-lang" to compute metrics separately for each language. Default is "per-lang".
+
+- **--pretrain**
+Name or path of the pretrained model to use. Default is "bert-base-multilingual-cased", but other models such as "bert-base-uncased"
+or "bert-large-uncased" can be used. The corresponding dataset is automaticaly loaded.
+
+- **--batch_size**
+Batch size used for training and evaluation. Default is 16.
+
+- **--learning_rate**
+Learning rate for the optimizer. Default is 4e-6.
+
+- **--num_epochs**
+Number of epochs to train the model. Default is 6.
+
+- **--weight_decay**
+Weight decay used in AdamW optimizer. Default is 0.1.
+
+- **--freeze**
+If set to True, some BERT layers are frozen and not updated during training. Default is False.
+
+- **--debug**
+If passed, uses 1% of the dataset.
+
+- **--smallData**
+If passed, uses 40% of the dataset.
+
+- **--classImbal**
+If passed, enables class imbalance handling strategies. Default is True.
+
+- **--langImbal**
+If passed, enables language imbalance handling. Default is True.
 
 can be set using command line arguments. Files **main_confidence.py** and **tuning2.py** can also be run as scripts, however, the later does not take in command line arguments (as it does a hyperparameter sweep). 
