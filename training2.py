@@ -48,6 +48,17 @@ def training(model,
         num_training_steps=len(train_loader) * num_epochs
     )
 
+
+    results = {"loss_hist" : [],
+               "iteration_hist" : [],
+               "epoch_hist" : []}
+    
+    results_val = {
+               'val_metric' : [],
+               'val_iter_hist': []}
+
+    batch_c = 0
+
     # Main Training Loop
     for epoch in range(num_epochs):
         model.train()
@@ -61,6 +72,10 @@ def training(model,
             losses = loss_fn(logits, labels)
 
             loss = losses.mean()
+            results['loss_hist'].append(loss.item())
+            results['epoch_hist'].append(epoch)
+            results['iteration_hist'].append(batch_c)
+            batch_c += 1
             
             loss.backward()
             optimizer.step()
@@ -69,8 +84,15 @@ def training(model,
 
             if i % 250 == 0:
                 print(f"Epoch {epoch+1}, Batch {i}, Loss: {loss.item():.4f}", flush=True)
+                val_metric = evaluate(model, val_loader, label_encoder, device, eval_type, "f1")
+                results_val['val_metric'].append(val_metric)
+                results_val['val_iter_hist'].append(batch_c)
 
-        val_metric = evaluate(model, val_loader, label_encoder, device, eval_type, "f1")
+    df = pd.DataFrame.from_dict(results)
+    df.to_csv("./logs/loss_hist.csv", index=False)
+
+    df_val = pd.DataFrame.from_dict(results_val)
+    df_val.to_csv("./logs/val_metric_hist.csv", index=False)
 
     return val_metric
 
@@ -82,7 +104,7 @@ def train_model_with_args(args):
         train_dataset, test_dataset = get_data(args.debug, args.smallData)
         print(f"\nLoaded multilingual data.\n")
     elif args.pretrain == "bert-base-uncased" or args.pretrain == "bert-large-uncased":
-        train_dataset, test_dataset = get_english_data(args.debug, args.smallData)
+        train_dataset, test_dataset = get_english_data(args.debug)
         print(f"\nLoaded translated data.\n")
     else:
         train_dataset, test_dataset = get_data(args.debug, args.smallData)
@@ -99,8 +121,7 @@ def train_model_with_args(args):
     tokenizer, label_encoder, args.batch_size,
     train_dataset, test_dataset,
     class_imbal=args.classImbal,
-    lang_imbal=args.langImbal
-)
+    lang_imbal=args.langImbal)
 
     # Create model
     model = BertForSequenceClassification.from_pretrained(args.pretrain, num_labels=num_labels)
