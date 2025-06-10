@@ -61,13 +61,6 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang", e
         metric = f1_total_lang / lang_nums
 
         print(f"\nValidation {eval_metric} : {metric:.4f}")
-        #print(report)
-        '''
-        print("\nPer-language reports:")
-        for lang, (acc_lang, report_lang) in per_language_reports.items():
-            print(f"\n🔸 Language: {lang} — Accuracy: {acc_lang:.4f}")
-            print(report_lang)
-        '''
     
     else:
 
