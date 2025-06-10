@@ -91,9 +91,7 @@ def evaluate(model, dataloader, label_encoder, device, eval_type = "per-lang", e
         report = classification_report(references, predictions, target_names=label_encoder.classes_)
 
         
-        print(f"\nValidation {eval_metric} : {metric:.4f}")
-        #print(report)
-        
+        print(f"\nValidation {eval_metric} : {metric:.4f}")     
 
     return metric
 
