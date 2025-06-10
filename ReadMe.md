@@ -48,7 +48,7 @@ Specifies the evaluation strategy. Default is "per-lang".
 
 - **--pretrain**
 Name or path of the pretrained model to use. Default is "bert-base-multilingual-cased", but other models such as "bert-base-uncased"
-or "bert-large-uncased" can be used. The corresponding dataset is automaticaly loaded.
+or "bert-large-uncased" can be used. The corresponding dataset is automatically loaded.
 
 - **--batch_size**
 Batch size used for training and evaluation. Default is 16.
