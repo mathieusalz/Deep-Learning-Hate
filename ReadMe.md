@@ -44,7 +44,7 @@ The folders are organised as follows:
 In order to train a model, both **training.py** and **main_confidence.py** files are setup to be run as a script. They accept the following configurable arguments:
 
 - **--eval_type**
-Specifies the evaluation strategy. Options include "per-lang" to compute metrics separately for each language. Default is "per-lang".
+Specifies the evaluation strategy. Default is "per-lang".
 
 - **--pretrain**
 Name or path of the pretrained model to use. Default is "bert-base-multilingual-cased", but other models such as "bert-base-uncased"
