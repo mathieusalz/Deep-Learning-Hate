@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm
 
 from training_utils import evaluate, freeze_model
-from data_utils2 import get_data, get_english_data, get_language_weights, get_dataloaders, get_class_weights
+from data_utils import get_data, get_english_data, get_language_weights, get_dataloaders, get_class_weights
 
 from datasets.utils.logging import disable_progress_bar
 from datasets.utils.logging import set_verbosity_error

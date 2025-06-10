@@ -1,7 +1,7 @@
 import argparse
 import optuna
-from training2 import training
-from data_utils2 import get_data, get_dataloaders
+from training import training
+from data_utils import get_data, get_dataloaders
 import numpy as np
 from sklearn.model_selection import KFold
 import torch

@@ -8,7 +8,7 @@ from sklearn.utils import shuffle
 from scipy import stats
 from scipy.stats import sem, norm
 from dataset_preprocessing import preprocess_multilingual, preprocess_english
-from training2 import train_model_with_args
+from training import train_model_with_args
 
 def set_seed(seed):
     random.seed(seed)
@@ -69,11 +69,11 @@ if __name__ == '__main__':
             data = json.loads(line)
             all_metrics.append(data)
 
-    confidence = 0.95 #confidence interval
+    confidence = 0.95 # Confidence interval
 
     metrics = np.array(all_metrics)
-    mean_metric = np.mean(metrics) #mean
-    std = np.std(metrics) #standard deviation
+    mean_metric = np.mean(metrics) # Mean
+    std = np.std(metrics) # Standard deviation
     n=len(metrics)
     conf_int_gaussian = norm.interval(confidence, loc=mean_metric, scale=std/np.sqrt(n))
     conf_int_student = stats.t.interval(confidence, len(metrics)-1, loc=mean_metric, scale=std/np.sqrt(n))
